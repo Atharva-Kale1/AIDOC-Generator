@@ -1,11 +1,13 @@
 fastapi
 uvicorn
 sqlalchemy
-pydantic
 python-multipart
 python-jose[cryptography]
 passlib[bcrypt]
+google-generativeai
 python-docx
 python-pptx
-google-generativeai
 python-dotenv
+firebase-admin
+psycopg2-binary
+gunicorn
