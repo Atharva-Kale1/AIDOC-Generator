@@ -6,11 +6,30 @@ import firebase_admin
 from firebase_admin import auth, credentials
 import os
 
+import json
+
 # Initialize Firebase Admin
 # Check if app is already initialized to avoid errors on reload
 if not firebase_admin._apps:
-    cred = credentials.Certificate("serviceAccountKey.json")
-    firebase_admin.initialize_app(cred)
+    cred_path = "serviceAccountKey.json"
+    if os.path.exists(cred_path):
+        cred = credentials.Certificate(cred_path)
+    else:
+        # Fallback to environment variable for production
+        cred_json = os.getenv("FIREBASE_CREDENTIALS_JSON")
+        if cred_json:
+            try:
+                cred_dict = json.loads(cred_json)
+                cred = credentials.Certificate(cred_dict)
+            except json.JSONDecodeError:
+                 print("ERROR: Invalid JSON in FIREBASE_CREDENTIALS_JSON")
+                 cred = None
+        else:
+            print("WARNING: No Firebase credentials found (file or env var). Auth will fail.")
+            cred = None
+
+    if cred:
+        firebase_admin.initialize_app(cred)
 
 security = HTTPBearer()
 
