@@ -31,6 +31,11 @@ export const getProject = async (id) => {
     return response.data;
 };
 
+export const deleteProject = async (id) => {
+    const response = await api.delete(`/projects/${id}`);
+    return response.data;
+};
+
 export const generateOutline = async (projectId, topic, options = {}) => {
     const response = await api.post('/generate/outline', {
         project_id: projectId,

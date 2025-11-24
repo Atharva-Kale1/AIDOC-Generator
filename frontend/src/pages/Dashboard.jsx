@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { getProjects } from '../api';
+import { getProjects, deleteProject } from '../api';
 import Layout from '../components/Layout';
 import { Plus, FileText, Presentation, Trash2 } from 'lucide-react';
-import axios from 'axios';
 
 const Dashboard = () => {
     const [projects, setProjects] = useState([]);
@@ -33,17 +32,8 @@ const Dashboard = () => {
         }
 
         try {
-            const { auth } = await import('../firebase');
-            const user = auth.currentUser;
-            if (user) {
-                const token = await user.getIdToken();
-                await axios.delete(`http://localhost:8000/projects/${projectId}`, {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
-                });
-                fetchProjects();
-            }
+            await deleteProject(projectId);
+            fetchProjects();
         } catch (error) {
             console.error('Failed to delete project', error);
             alert('Failed to delete project');
